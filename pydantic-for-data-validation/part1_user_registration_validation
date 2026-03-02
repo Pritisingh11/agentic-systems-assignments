@@ -1,0 +1,42 @@
+from pydantic import BaseModel, field_validator
+
+class UserRegister(BaseModel):
+    username: str
+    email: str
+    age: int
+
+    # Validate username length
+    @field_validator("username")
+    def username_min_length(cls, value):
+        if len(value) < 5:
+            raise ValueError("Username must be at least 5 characters long")
+        return value
+
+    # Validate email format (basic check)
+    @field_validator("email")
+    def email_must_be_valid(cls, value):
+        if "@" not in value or "." not in value:
+            raise ValueError("Invalid email format")
+        return value
+
+    # Validate age
+    @field_validator("age")
+    def age_must_be_adult(cls, value):
+        if value < 18:
+            raise ValueError("Age must be at least 18")
+        return value
+
+
+if __name__ == "__main__":
+    print("=== User Registration ===")
+    username = input("Enter username: ")
+    email = input("Enter email: ")
+    age = int(input("Enter age: "))
+
+    try:
+        user = UserRegister(username=username, email=email, age=age)
+        print("\n✅ Registration successful!")
+        print(user)
+    except Exception as e:
+        print("\n❌ Registration failed!")
+        print("Reason:", e)

@@ -1,0 +1,73 @@
+from typing import Optional
+from pydantic import BaseModel, field_validator
+
+# Address Model
+class Address(BaseModel):
+    city: str
+    pincode: str
+
+    @field_validator("city")
+    def city_min_length(cls, value):
+        if len(value) < 3:
+            raise ValueError("City name must be at least 3 characters long")
+        return value
+
+    @field_validator("pincode")
+    def pincode_must_be_six_digits(cls, value):
+        if not value.isdigit() or len(value) != 6:
+            raise ValueError("Pincode must be exactly 6 digits")
+        return value
+
+
+# User Model
+class User(BaseModel):
+    user_id: int
+    name: str
+    email: str
+    age: int
+    address: Address
+    is_premium: Optional[bool] = False
+
+    @field_validator("email")
+    def email_must_be_valid(cls, value):
+        if "@" not in value or "." not in value:
+            raise ValueError("Invalid email format")
+        return value
+
+    @field_validator("age")
+    def age_must_be_adult(cls, value):
+        if value < 18:
+            raise ValueError("Age must be at least 18")
+        return value
+
+
+if __name__ == "__main__":
+    print("=== User Registration ===")
+    try:
+        # Take input from user
+        user_id = int(input("Enter user ID: "))
+        name = input("Enter name: ")
+        email = input("Enter email: ")
+        age = int(input("Enter age: "))
+        city = input("Enter city: ")
+        pincode = input("Enter pincode: ")
+        is_premium_input = input("Is premium user? (yes/no): ").strip().lower()
+        is_premium = True if is_premium_input == "yes" else False
+
+        # Create Address and User objects
+        address = Address(city=city, pincode=pincode)
+        user = User(
+            user_id=user_id,
+            name=name,
+            email=email,
+            age=age,
+            address=address,
+            is_premium=is_premium
+        )
+
+        print("\n✅ Registration successful!")
+        print(user)
+
+    except Exception as e:
+         print("\n❌ Registration failed!") 
+         print("Reason:", e)

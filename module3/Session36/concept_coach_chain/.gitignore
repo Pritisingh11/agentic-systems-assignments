@@ -1,0 +1,24 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.pkl
+/.idea/
+/.vscode/
+dist/
+build/
+/.pytest_cache/
+
+# Additional common ignores
+.venv/
+env/
+ENV/
+pip-wheel-metadata/
+*.egg-info/
+.python-version
+.mypy_cache/
+.cache/
+*.log
+.DS_Store
+.ollama/
+/.venv/
